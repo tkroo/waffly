@@ -1602,7 +1602,6 @@ export const wordlist_5 = [
 "shrub",
 "shrug",
 "shyly",
-"sibyl",
 "sided",
 "siege",
 "sieve",

@@ -14,9 +14,9 @@
     }
   }}
   class="tile bounce"
-  class:active={active}
+  class:active={tile.swapStatus == 'selected'}
   data-status={tile.status}
-  data-swapStatus={tile.swapStatus}
+  data-swapStatus={tile.swapStatus == 'selected' ? 'woo' : ''}
   style="animation-delay: {delayFactor * 50}ms"
   >
   <span class="answer">{tile.correctValue}</span>
@@ -31,7 +31,7 @@
     align-items: center;
     justify-content: center;
     user-select: none;
-    font-size: clamp(1rem, 6cqi, 3.5rem);
+    font-size: clamp(2rem, 6cqi, 3.5rem);
     /* font-size: 3rem; */
     font-weight: bold;
     aspect-ratio: 1;
@@ -117,4 +117,19 @@
     color: transparent;
     cursor: initial;
   }
+
+  @keyframes woo2 {
+  0% {
+    color: #efedea;
+  }
+  5% {
+    color: var(--wavecolor1);
+  }
+  50% {
+    color: var(--wavecolor2);
+  }
+  100% {
+    color: var(--wavecolor3);
+  }
+}
 </style>
