@@ -1,0 +1,53 @@
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
+  line-height: 1.5;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  --maxwide: 500px;
+  --radius: 0.5rem;
+  --ccolor: hsl(160, 90%, 32%);
+  --icolor: hsl(43, 50%, 53%);
+  --xcolor: hsl(240, 1%, 30%);
+  
+  /* --ccolor: hsl(165, 50%, 52%);
+  --icolor: hsl(35, 30%, 45%);
+  --xcolor: hsl(240, 1%, 18%); */
+
+  /* --xcolor: hsl(200, 4%, 20%); */
+  /* --bg: light-dark(#161620, #efedea); */
+  --bg: light-dark(#161620, #ccc);
+  /* --fg: light-dark(#efedea, #161620); */
+  --fg: light-dark(#ccc, #161620);
+  --wavecolor1: hsl(157, 90%, 32%);
+  --wavecolor2: hsl(313, 60%, 50%);
+  --wavecolor3: hsl(43, 50%, 53%);
+
+  --tileFG: #fff;
+  --tileBG: #000;
+}
+
+button {
+  font-family: inherit;
+}
+
+main {
+  margin: 0 auto;
+  max-width: min(70vh, 100vw);
+  /* border: 1px dashed dodgerblue; */
+}
