@@ -38,7 +38,7 @@ const oneWordFromList = async (obj) => {
   return choices.length ? choices[Math.floor(Math.random() * choices.length)] : undefined;
 };
 
-export const pickSixWords = async () => {
+export const pickSixWords = async (): Promise<string[]> => {
   const words = new Set();
   const maxAttempts = 20000;
 
@@ -82,7 +82,7 @@ export const pickSixWords = async () => {
   return [];
 }
 
-export const pickEightWords = async () => {
+export const pickEightWords = async (): Promise<string[]> => {
   const words = new Set();
   const maxAttempts = 20000;
   

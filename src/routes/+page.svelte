@@ -1,10 +1,12 @@
 <script lang="ts">
-  import { Game } from "$lib/game.svelte.ts";
+  import type { Tile, Board } from '$lib/types';
+  import { Game } from "$lib/game.svelte";
 	import LetterTile from "$lib/LetterTile.svelte";
+  import { onMount } from 'svelte';
 
-  let board = $state();
+  let board = $state({} as Board);
   let size:number = $state(5)
-  let game;
+  let game: Game | null;
 
   let swapPair:Tile[] = $state([]);
 
@@ -20,12 +22,14 @@
   }
   
   const shuffle = () => {
-    board = game.shuffle2DArray(board);
+    board = game?.shuffle2DArray(board);
   }
 
-  setup(size);
+  onMount(() => {
+    setup(size);
+  })
 
-  function handleTileClick(tile) {
+  function handleTileClick(tile: Tile) {
     tile.swapStatus='';
     if (swapPair.length == 0) {
       swapPair.push(tile);
@@ -45,7 +49,7 @@
       // if (!myBools.easierMode || (tile2.value != tile2.correctValue && tile1.value != tile1.correctValue)) {
       //   swapCounter--;
       // }
-      board = game.updateTileStatuses(board);
+      board = game?.updateTileStatuses(board);
     }
     // saveHistory();
   }

@@ -78,13 +78,16 @@
   }
   .tile.active {
     transition: all 0.1s ease-out;
-    transform: scale(1.1);
+    transform: scale(1.2);
+    outline: 0.5rem solid hsla(200, 60%, 60%, 0.5);
+    outline-offset: -0.5rem;
+    z-index: 1000;
     /* background-color: hsl(36, 24%, 83%); */
   }
 
   .tile.active .inner {
-    background-color: hsla(36, 24%, 100%, 0.125);
-    border: 6px solid hsl(200, 60%, 60%);
+    background-color: hsla(36, 24%, 100%, 0.25);
+    /* border: 6px solid hsl(200, 60%, 60%); */
   }
 
   .tile[data-status='c'] {

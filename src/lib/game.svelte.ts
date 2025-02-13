@@ -8,7 +8,10 @@ export const myBools = $state({
 })
 
 export class Game {
-  constructor(gridSize) {
+  gridSize: number;
+  grid: Board;
+  words: string[] | null;
+  constructor(gridSize: number) {
     this.gridSize = gridSize;
     this.grid = this.generateGrid(gridSize);
     this.words = null;
@@ -18,7 +21,7 @@ export class Game {
     this.words = await this.pickWords(this.gridSize);
   }
 
-  generateGrid(gridSize) {
+  generateGrid(gridSize: number) {
     const grid = [];
     for (let r = 0; r < gridSize; r++) {
       const row = [];
@@ -32,7 +35,10 @@ export class Game {
     return grid;
   }
 
-  fillWaffleGrid = (grid, words) => {
+  fillWaffleGrid = (grid: Board, words: string[]) => {
+    if(!grid) {
+      throw new Error('grid is undefined');
+    }
     const gridSize = grid.length;
     for (let i = 0; i < words.length; i++) {
       switch (i) {
@@ -97,13 +103,20 @@ export class Game {
     return grid;
   }
 
-  shuffle2DArray(myArray: Tile[][]) {
-    const gridSize = myArray.length;
+  shuffle2DArray(myArray: Board) {
+    if(!myArray) {
+      throw new Error('myArray is undefined');
+    }
+    const gridSize = myArray?.length;
     // Flatten the 2D array into a 1D array
-    const flatArr = myArray.flat(); //.filter(a => a.value !== '');
+    const flatArr = myArray?.flat(); //.filter(a => a.value !== '');
+    if (!flatArr) {
+      throw new Error('flatArr is undefined');
+    }
     // const excludedPositions = ["11", "13", "15", "31", "33", "35", "51", "53", "55", "00", "22",]; // including top corner and 2,2
     const excludedPositions = myBools.helperPositions ? ["00", "22",] : [];
   
+
     // Fisher-Yates shuffle algorithm
     for (let i = flatArr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -135,7 +148,7 @@ export class Game {
     return shuffledArray;
   }
 
-  async pickWords(gridSize) {
+  async pickWords(gridSize: number): Promise<string[]> {
     console.log('pickWords: ', gridSize);
     const words = gridSize === 5 ? await pickSixWords() : await pickEightWords();
     return words;
@@ -150,11 +163,12 @@ export class Game {
   }
 
   getRow(row: number, arr: Board) {
-    return arr[row];
+    return arr![row];
+    // return arr[row];
   }
   
   getCol(col: number, arr: Board) {
-    return arr.map(x => x[col]);
+    return arr!.map(x => x[col]);
   }
   
   countAppearances(arr: string[]) {
@@ -164,7 +178,10 @@ export class Game {
     }
     return counts;
   }
-  updateTileStatuses(grid) {
+  updateTileStatuses(grid: Board) {
+    if(!grid) {
+      throw new Error('grid is undefined');
+    }
     const gridSize = grid.length;
     for(let twice = 0; twice < 2; twice++) {
     for(let r= 0; r < gridSize; r++) {
