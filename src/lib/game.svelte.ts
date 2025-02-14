@@ -7,7 +7,7 @@ export function createGame(gridSize: number): GameReturnType {
   let _grid: Board = generateGrid(gridSize); // Call generateGrid within the factory
   let _words: string[] | null = null;
   let _selectedTile: Tile | null = null; // State to track selected tile for swapping
-  let _startingSwaps:number = gridSize == 5 ? 15 : 30;
+  let _startingSwaps:number = gridSize == 5 ? 16 : 32;
   let swaps: number = _startingSwaps;
   
   
@@ -95,6 +95,19 @@ export function createGame(gridSize: number): GameReturnType {
       }
     }
     updateTileStatuses(grid); // Call updateTileStatuses within the factory scope
+    return grid;
+  }
+
+  function solveGrid(grid: Board): Board {
+    if (!grid) {
+      throw new Error('grid is undefined');
+    }
+    const gridSize = grid.length;
+    for (let r = 0; r < gridSize; r++) {
+      for (let c = 0; c < gridSize; c++) {
+        grid[r][c].value = grid[r][c].correctValue;
+      }
+    }
     return grid;
   }
 
@@ -256,6 +269,7 @@ export function createGame(gridSize: number): GameReturnType {
     getRow: getRow,
     getCol: getCol,
     getSwaps: getSwaps,
+    solveGrid: solveGrid,
     resetSwaps: resetSwaps,
     countAppearances: countAppearances,
     updateTileStatuses: updateTileStatuses,

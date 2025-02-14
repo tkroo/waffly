@@ -5,45 +5,56 @@
   let { swaps, startingSwaps, outOfTurns, solved, shuffle, chooseGame, toggleDebug } = $props();
 </script>
 
-<h3 class="message">
-  <button class="swapsnotice" onclick={toggleDebug}>{swaps} swaps remaining</button>
-  <progress value={swaps} max={startingSwaps}></progress>
-  {#if solved}
+<div class="message">
+  <div class="prog">
+    <progress value={swaps} max={startingSwaps}></progress>
+    <button class="swapsnotice" onclick={toggleDebug}>{swaps} swaps remain</button>
+  </div>
+  <div class="win-loose">
+    {#if solved}
     {swaps < 2 ? gameMessages.close[Math.floor(Math.random() * gameMessages.close.length)] : gameMessages.won[Math.floor(Math.random() * gameMessages.won.length)]}
     <ChoiceButtons {chooseGame} />
-  {/if}
-  {#if outOfTurns}{gameMessages.lost[Math.floor(Math.random() * gameMessages.lost.length)]}
-  <AgainButton message="Replay?" func={shuffle} />
-  <ChoiceButtons {chooseGame} />
-  {/if}
-</h3>
+    {/if}
+    {#if outOfTurns}{gameMessages.lost[Math.floor(Math.random() * gameMessages.lost.length)]}
+    <AgainButton message="Replay?" func={shuffle} />
+    <ChoiceButtons {chooseGame} />
+    {/if}
+  </div>
+</div>
 
 <style>
   .message {
-    font-size: 1.5rem;
+    color: var(--bg);
+    font-weight: bold;
     padding: 0;
-    margin: 2rem auto;
-    min-height: 4.5rem;
+  }
+
+  .prog {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 1.5rem;
+    gap: 0.25rem;
+  }
+
+  .swapsnotice {
+    font-size: 0.9rem;
+  }
+
+
+  .win-loose {
+    font-size: 2rem;
     text-align: center;
   }
-
-  .message .swapsnotice {
-    font-size: 1rem;
-    margin: 0 auto;
-    padding: 0;
-  }
-
-  .solved .message {
-    color: var(--ccolor);
-  }
-
+  
   progress[value],
   progress[value]::-webkit-progress-bar {
     --bg: hsl(157, 90%, 32%);
     --fg: hsl(43, 50%, 53%);
     appearance: none;
     border: none;
-    width: 100%;
+    width: 70%;
+    flex-grow: 1;
     
     height: .5rem;
 
@@ -51,7 +62,7 @@
     border-radius: var(--radius);
       
     position: relative;
-    margin: 0 0 0.5rem;
+    margin: 0 0;
   }
 
   progress::-moz-progress-bar {

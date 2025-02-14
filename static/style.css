@@ -7,19 +7,7 @@ html {
 }
 
 :root {
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  
-  line-height: 1.5;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  --maxwide: 500px;
+  --maxwide: min(55vh, 100vw);
   --radius: 0.5rem;
   --ccolor: hsl(160, 90%, 32%);
   --icolor: hsl(43, 50%, 53%);
@@ -31,21 +19,44 @@ html {
 
   /* --xcolor: hsl(200, 4%, 20%); */
   /* --bg: light-dark(#161620, #efedea); */
-  --bg: light-dark(#161620, #ccc);
+  --bg: light-dark(#242424, #efedea);
   /* --fg: light-dark(#efedea, #161620); */
-  --fg: light-dark(#ccc, #161620);
+  --fg: light-dark(#efedea, #242424);
   --wavecolor1: hsl(157, 90%, 32%);
   --wavecolor2: hsl(313, 60%, 50%);
   --wavecolor3: hsl(43, 50%, 53%);
 
   --tileFG: #fff;
   --tileBG: #000;
+  
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  
+  line-height: 1.5;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: var(--fg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  
 }
 
 main {
   margin: 0 auto;
-  max-width: min(55vh, 100vw);
-  /* border: 1px dashed dodgerblue; */
+  max-width: var(--maxwide);
+  /* border: 1px dashed var(--icolor); */
+}
+
+.cb {
+  --ccolor: hsl(20, 90%, 50%);
+  --icolor: hsl(209, 92%, 55%);
+  --xcolor: hsl(240, 1%, 30%);
+  --wavecolor1: hsl(20, 90%, 50%);
+  --wavecolor2: hsl(209, 92%, 55%);
+  --wavecolor3: hsl(43, 80%, 53%);
 }
 
 button {
@@ -65,13 +76,14 @@ button:disabled {
 }
 
 .againbutton {
-  min-width: 300px;
+  /* min-width: 300px; */
+  width: 100%;
   border-radius: var(--radius);
   color: var(--ccolor);
   background-color: #fff;
   padding: 0.5rem 1rem;
   text-decoration: none;
-  font-size: inherit;
+  font-size: 1.25rem;
   font-weight: bold;
   display: flex;
   align-items: center;
@@ -116,7 +128,7 @@ button:disabled {
     border-color: var(--wavecolor1);
   }
   50% {
-    transform: translateY(0.5rem);
+    transform: translateY(-0.5rem);
     background-color: var(--wavecolor2);
     border-color: var(--wavecolor2);
   }

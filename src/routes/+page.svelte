@@ -1,9 +1,11 @@
 <script lang="ts">
   import type { Tile, Board, GameReturnType } from '$lib/types';
   import { createGame } from '$lib/game.svelte';
+  import ChoiceButtons from "$lib/components/ChoiceButtons.svelte";
+	import Header from '$lib/components/Header.svelte';
   import LetterTile from "$lib/components/LetterTile.svelte";
   import Messages from "$lib/components/Messages.svelte";
-  import ChoiceButtons from "$lib/components/ChoiceButtons.svelte";
+  import Stats from '$lib/components/Stats.svelte';
 
   const title = 'waffleclone';
 
@@ -13,10 +15,11 @@
   let words = $state([]);
   let swaps: number | null | undefined = $state();
   let startingSwaps = $state();
-  let choiceMade = $state(false);
-
+  
   let swapPair = $state([]);
-
+  
+  let choiceMade = $state(false);
+  let showPopup = $state(false);
   let debug = $state(false);
 
   const toggleDebug = () => {
@@ -74,27 +77,50 @@
     setup(s);
   }
 
-</script>
+  function handleKeyDown(e: KeyboardEvent) {
+    if (e.key == '-') {
+      debug = !debug;
+    }
+    if (e.key == '=') {
+      shuffle();
+    }
+    // if (e.key == '0') {
+    //   myBools.cheat = !myBools.cheat;
+    // }
+    if (e.key == '5') {
+      chooseGame(5);
+    }
+    if (e.key == '7') {
+      chooseGame(7);
+    }
+    if (e.key == 's') {
+      board = game?.solveGrid(board); 
+      board = game?.updateTileStatuses(board);
+    }
+    if (e.key == ']') {
+      swaps++;
+    }
+    if (e.key == '[') {
+      swaps--;
+    }
+  }
 
+</script>
+<svelte:window onkeydown={handleKeyDown} />
 <svelte:head>
   <title>{title} {size}x{size}</title>
 </svelte:head>
-<header>
-  <h1><button onclick={() => choiceMade = false}>{title}</button></h1>
-  <!-- <div class="controls">
-    <button onclick={() => setup(5)}>5x5</button>
-    <button onclick={() => setup(7)}>7x7</button>
-    <button onclick={shuffle}>shuffle</button>
-    <div>size: {size}</div>
-  </div> -->
-</header>
+<Header {title} {showPopup} bind:choiceMade />
 {#if debug}
   <div class="debug">{words}</div>
 {/if}
 {#if !choiceMade}
-<ChoiceButtons {chooseGame} />  
+<div class="choices">
+  <ChoiceButtons {chooseGame} />
+</div>
 {/if}
-{#if board && choiceMade}
+{#if board && choiceMade && words.length > 0}
+<Stats {board} />
 <div class="board" class:solved={solved} class:failed={outOfTurns} style="--cols: {board.length}" >
   {#each board as row, rowIndex}
     <div class="row" data-row={rowIndex}>
@@ -116,33 +142,21 @@
 </div>
 
 <Messages {toggleDebug} {swaps} {startingSwaps} {outOfTurns} {solved} {chooseGame} {shuffle} />
-
+{:else}
+{#if choiceMade && words.length == 0}
+  <p class="error">Failed to create puzzle. Try again.</p>
+  <div class="choices">
+    <ChoiceButtons {chooseGame} />
+  </div>
+  {/if}
 {/if}
 
 
 <style>
-  header {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
+  .choices {
+    margin-top: 5rem;
+    font-size: 1.5rem;
     width: 100%;
-  }
-  h1 {
-    margin: 0 0 1rem 0;
-  }
-  h1 button {
-    margin: 0;
-    padding: 0;
-    font-size: 1.2rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    /* color: var(--ccolor); */
-    background: linear-gradient(0deg, var(--ccolor), var(--icolor));
-    background: -webkit-linear-gradient(0deg, var(--ccolor), var(--icolor));
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-fill-color: transparent;
   }
   .board {
     --gap: 0.5rem;
@@ -151,6 +165,10 @@
     flex-wrap: wrap;
     gap: var(--gap);
     transition: all 0.3s ease-in-out;
+    container-type: inline-size;
+    
+    width: 100%;
+    /* border: 1px dashed dodgerblue; */
   }
 
   .board.failed {
@@ -182,5 +200,11 @@
     padding: 0.5rem 1rem;
     z-index: 1000;
     font-size: 0.8rem;
+  }
+  .error {
+    color: rgb(211, 64, 64);
+    font-size: 1.5rem;
+    text-align: center;
+    margin: 1rem auto;
   }
 </style>

@@ -32,8 +32,9 @@
     align-items: center;
     justify-content: center;
     user-select: none;
-    font-size: clamp(2rem, 6cqi, 3.5rem);
-    /* font-size: 3rem; */
+    font-size: inherit;
+    font-size: clamp(2rem, 4cqi, 3rem);
+    /* font-size: 1rem; */
     font-weight: bold;
     aspect-ratio: 1;
     text-transform: uppercase;
@@ -41,6 +42,7 @@
     border: none;
     z-index: 20;
     transition: all 0.2s ease-in;
+    min-width: 1rem;
   }
 
   .tile .inner {

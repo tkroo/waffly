@@ -23,6 +23,7 @@ export type GameReturnType = {
   getWords: () => string[] | null;
   getRow: (row: number, arr: Board) => Tile[];
   getCol: (col: number, arr: Board) => Tile[];
+  solveGrid: (grid: Board) => Board;
   countAppearances: (arr: string[]) => { [key: string]: number; };
   updateTileStatuses: (grid: Board) => Board;
   swapTile: (tile: Tile) => void; // Added swapTile function

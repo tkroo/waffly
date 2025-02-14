@@ -1,4 +1,5 @@
 <script>
+  import { myBools } from "$lib/utils.svelte";
   let { children } = $props();
 </script>
 
@@ -6,6 +7,6 @@
   <title>waffly</title>
 </svelte:head>
 
-<main>
+<main class:cb={myBools.highContrast}>
   {@render children()}
 </main>
