@@ -42,12 +42,87 @@ html {
   --tileBG: #000;
 }
 
-button {
-  font-family: inherit;
-}
-
 main {
   margin: 0 auto;
-  max-width: min(70vh, 100vw);
+  max-width: min(55vh, 100vw);
   /* border: 1px dashed dodgerblue; */
+}
+
+button {
+  border-radius: var(--radius);
+  border: 1px solid transparent;
+  font-family: inherit;
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.25s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+.againbutton {
+  min-width: 300px;
+  border-radius: var(--radius);
+  color: var(--ccolor);
+  background-color: #fff;
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  font-size: inherit;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem auto;
+}
+
+.againbutton:hover {
+  color: #fff;
+  background-color: var(--ccolor);
+}
+
+
+
+.solved .tile, .failed .tile {
+  cursor: initial;
+}
+
+.solved .tile[data-swapStatus='woo'] {
+  animation: unset;
+}
+.solved .bounce {
+  animation: wave 0.4s ease-in-out 2s 4 reverse both running;
+}
+
+.tile.blank {
+  border: none;
+  background-color: transparent;
+  color: transparent;
+  cursor: initial;
+}
+
+@keyframes wave {
+  0% {
+    transform: translateY(0);
+    background-color: var(--ccolor);
+    border-color: var(--ccolor);
+  }
+  5% {
+    transform: translateY(0);
+    background-color: var(--wavecolor1);
+    border-color: var(--wavecolor1);
+  }
+  50% {
+    transform: translateY(0.5rem);
+    background-color: var(--wavecolor2);
+    border-color: var(--wavecolor2);
+  }
+  100% {
+    transform: translateY(0);
+    background-color: var(--wavecolor3);
+    border-color: var(--wavecolor3);
+  }
 }

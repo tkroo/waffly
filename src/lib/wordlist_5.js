@@ -1685,6 +1685,7 @@ export const wordlist_5 = [
 "solar",
 "solid",
 "solve",
+"sonar",
 "sonny",
 "sooth",
 "sooty",

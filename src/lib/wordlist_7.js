@@ -1905,7 +1905,6 @@ export const wordlist_7 = [
   "toering",
   "tonight",
   "tonnage",
-  "topanga",
   "topdeck",
   "topless",
   "topples",

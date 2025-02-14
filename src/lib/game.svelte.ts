@@ -1,33 +1,28 @@
-import type { Tile, Board } from '$lib/types';
 import { pickSixWords, pickEightWords } from "$lib/pickWords";
+import type { GameReturnType, Board, Tile } from "./types";
 
-// word puzzle played on a 5x5 or 7x7 grid
+export function createGame(gridSize: number): GameReturnType {
 
-export const myBools = $state({
-  helperPositions: false
-})
-
-export class Game {
-  gridSize: number;
-  grid: Board;
-  words: string[] | null;
-  constructor(gridSize: number) {
-    this.gridSize = gridSize;
-    this.grid = this.generateGrid(gridSize);
-    this.words = null;
+  let _gridSize: number = gridSize; // Use _ to indicate "internal" or "private"
+  let _grid: Board = generateGrid(gridSize); // Call generateGrid within the factory
+  let _words: string[] | null = null;
+  let _selectedTile: Tile | null = null; // State to track selected tile for swapping
+  let _startingSwaps:number = gridSize == 5 ? 15 : 30;
+  let swaps: number = _startingSwaps;
+  
+  
+  async function initialize() {
+    _words = await pickWords(_gridSize);
+    swaps = _startingSwaps;
   }
 
-  async initialize() {
-    this.words = await this.pickWords(this.gridSize);
-  }
-
-  generateGrid(gridSize: number) {
-    const grid = [];
+  function generateGrid(gridSize: number): Board {
+    const grid: Board = [];
     for (let r = 0; r < gridSize; r++) {
-      const row = [];
+      const row: Tile[] = [];
       for (let c = 0; c < gridSize; c++) {
-        const hidden = (r%2 == 1 && c%2 == 1);
-        const tile: Tile = {value: ``, correctValue: ``, status: '', x: r, y: c, swapStatus: '', hidden: hidden};
+        const hidden = (r % 2 == 1 && c % 2 == 1);
+        const tile: Tile = { value: ``, correctValue: ``, status: '', x: r, y: c, swapStatus: '', hidden: hidden };
         row.push(tile);
       }
       grid.push(row);
@@ -35,8 +30,8 @@ export class Game {
     return grid;
   }
 
-  fillWaffleGrid = (grid: Board, words: string[]) => {
-    if(!grid) {
+  function fillWaffleGrid(grid: Board, words: string[]): Board {
+    if (!grid) {
       throw new Error('grid is undefined');
     }
     const gridSize = grid.length;
@@ -50,14 +45,14 @@ export class Game {
           break;
         case 1:
           for (let x = 0; x < gridSize; x++) {
-            grid[x][gridSize-1].value = words[i][x];
-            grid[x][gridSize-1].correctValue = words[i][x];          
+            grid[x][gridSize - 1].value = words[i][x];
+            grid[x][gridSize - 1].correctValue = words[i][x];
           }
           break;
-          case 2:
-            for (let x = 0; x < gridSize; x++) {
-            grid[gridSize-1][x].value = words[i][x];
-            grid[gridSize-1][x].correctValue = words[i][x];
+        case 2:
+          for (let x = 0; x < gridSize; x++) {
+            grid[gridSize - 1][x].value = words[i][x];
+            grid[gridSize - 1][x].correctValue = words[i][x];
           }
           break;
         case 3:
@@ -74,7 +69,7 @@ export class Game {
           break;
         case 5:
           for (let x = 0; x < gridSize; x++) {
-            if(gridSize == 5) {
+            if (gridSize == 5) {
               grid[2][x].value = words[i][x];
               grid[2][x].correctValue = words[i][x];
             } else {
@@ -83,7 +78,7 @@ export class Game {
             }
           }
           break;
-          case 6:
+        case 6:
           for (let x = 0; x < gridSize; x++) {
             grid[2][x].value = words[i][x];
             grid[2][x].correctValue = words[i][x];
@@ -99,12 +94,12 @@ export class Game {
           break;
       }
     }
-    this.updateTileStatuses(grid);
+    updateTileStatuses(grid); // Call updateTileStatuses within the factory scope
     return grid;
   }
 
-  shuffle2DArray(myArray: Board) {
-    if(!myArray) {
+  function shuffle2DArray(myArray: Board): Board {
+    if (!myArray) {
       throw new Error('myArray is undefined');
     }
     const gridSize = myArray?.length;
@@ -114,27 +109,27 @@ export class Game {
       throw new Error('flatArr is undefined');
     }
     // const excludedPositions = ["11", "13", "15", "31", "33", "35", "51", "53", "55", "00", "22",]; // including top corner and 2,2
-    const excludedPositions = myBools.helperPositions ? ["00", "22",] : [];
-  
+    const excludedPositions = ["00", "22",];
+
 
     // Fisher-Yates shuffle algorithm
     for (let i = flatArr.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       // don't swap if either of the two tiles are in excluded positions
 
-      let a = flatArr[i].x +''+ flatArr[i].y;
-      let b = flatArr[j].x +''+ flatArr[j].y;
+      let a = flatArr[i].x + '' + flatArr[i].y;
+      let b = flatArr[j].x + '' + flatArr[j].y;
       // if( excludedPositions.includes(a) || excludedPositions.includes(b) ) {
       if (flatArr[i].hidden || flatArr[j].hidden || excludedPositions.includes(a) || excludedPositions.includes(b)) {
         continue;
       } else {
         [flatArr[i].correctValue, flatArr[j].correctValue] = [flatArr[j].correctValue, flatArr[i].correctValue];
         [flatArr[i], flatArr[j]] = [flatArr[j], flatArr[i]];
-      }   
+      }
     }
-  
+
     // Reconstruct the 2D array
-    let shuffledArray = [];
+    let shuffledArray: Board = [];
     while (flatArr.length) {
       shuffledArray.push(flatArr.splice(0, myArray[0].length));
     }
@@ -144,89 +139,126 @@ export class Game {
         shuffledArray[i][j].y = j;
       }
     }
-    this.updateTileStatuses(shuffledArray);
+    updateTileStatuses(shuffledArray); // Call updateTileStatuses within the factory scope
     return shuffledArray;
   }
 
-  async pickWords(gridSize: number): Promise<string[]> {
-    console.log('pickWords: ', gridSize);
-    const words = gridSize === 5 ? await pickSixWords() : await pickEightWords();
+  async function pickWords(size: number): Promise<string[]> {
+    console.log('*** pickWords: ', size);
+    const words = size === 5 ? await pickSixWords() : await pickEightWords();
     return words;
   }
 
-  getGrid() {
-    return this.grid;
-  }
-  
-  getWords() {
-    return this.words;
+  function getGrid(): Board {
+    return _grid;
   }
 
-  getRow(row: number, arr: Board) {
-    return arr![row];
-    // return arr[row];
+  function getWords(): string[] | null {
+    return _words;
   }
   
-  getCol(col: number, arr: Board) {
+  function getSwaps(): number | null {
+    return swaps;
+  }
+  
+  function resetSwaps() {
+    swaps = _startingSwaps;
+  }
+
+  function getRow(row: number, arr: Board): Tile[] {
+    return arr![row];
+  }
+
+  function getCol(col: number, arr: Board): Tile[] {
     return arr!.map(x => x[col]);
   }
-  
-  countAppearances(arr: string[]) {
+
+  function countAppearances(arr: string[]): { [key: string]: number } {
     let counts: { [key: string]: number } = {};
     for (let i = 0; i < arr.length; i++) {
       counts[arr[i]] = counts[arr[i]] ? counts[arr[i]] + 1 : 1;
     }
     return counts;
   }
-  updateTileStatuses(grid: Board) {
-    if(!grid) {
+
+  function updateTileStatuses(grid: Board): Board {
+    if (!grid) {
       throw new Error('grid is undefined');
     }
     const gridSize = grid.length;
-    for(let twice = 0; twice < 2; twice++) {
-    for(let r= 0; r < gridSize; r++) {
-      for(let c= 0; c < gridSize; c++) {
-        let rowLetters = this.getRow(r, grid).filter((l:Tile) => l.status != 'c').map((x:Tile) => x.correctValue);
-        let colLetters = this.getCol(c, grid).filter((l:Tile) => l.status != 'c').map((x:Tile) => x.correctValue);
-        let value = grid[r][c].value;
-        
-        let rowOnly = (r%2 == 0 && c%2 == 1);
-        let columnOnly = (r%2 == 1 && c%2 == 0);
-  
-        let testAgainst = columnOnly ? colLetters : rowOnly ? rowLetters : [...rowLetters, ...colLetters];
-        let counts = this.countAppearances(testAgainst);
-  
-        if(Object.keys(counts).includes(value)) {
-          grid[r][c].status = 'i';
-        } else {
-          grid[r][c].status = 'x';
-        }
-        if (value == grid[r][c].correctValue) {
-          grid[r][c].status = 'c';
+    for (let twice = 0; twice < 2; twice++) {
+      for (let r = 0; r < gridSize; r++) {
+        for (let c = 0; c < gridSize; c++) {
+          let rowLetters = getRow(r, grid).filter((l: Tile) => l.status != 'c').map((x: Tile) => x.correctValue);
+          let colLetters = getCol(c, grid).filter((l: Tile) => l.status != 'c').map((x: Tile) => x.correctValue);
+          let value = grid[r][c].value;
+
+          let rowOnly = (r % 2 == 0 && c % 2 == 1);
+          let columnOnly = (r % 2 == 1 && c % 2 == 0);
+
+          let testAgainst = columnOnly ? colLetters : rowOnly ? rowLetters : [...rowLetters, ...colLetters];
+          let counts = countAppearances(testAgainst);
+
+          if (Object.keys(counts).includes(value)) {
+            grid[r][c].status = 'i';
+          } else {
+            grid[r][c].status = 'x';
+          }
+          if (value == grid[r][c].correctValue) {
+            grid[r][c].status = 'c';
+          }
         }
       }
     }
-  }
     return grid;
   }
+
+  function swapTile(tile: Tile): void {
+    if (!tile || tile.hidden) {
+      return; // Do nothing if tile is null or hidden
+    }
+
+    if (!_selectedTile) {
+      // First click: select the tile
+      _selectedTile = tile;
+      _selectedTile.swapStatus = 'selected'; // Indicate selected state (for UI)
+      // UI needs to update tile's appearance based on swapStatus
+    } else {
+      // Second click: swap tiles
+      if (_selectedTile === tile) {
+        // Deselect if the same tile is clicked again
+        _selectedTile.swapStatus = ''; // Clear selected state
+        _selectedTile = null;
+        // UI needs to update tile's appearance
+      } else {
+        [_selectedTile.value, tile.value] = [tile.value, _selectedTile.value];
+        _selectedTile.swapStatus = ''; // Clear selected state for both
+        swaps--;
+        tile.swapStatus = '';
+        _selectedTile = null;
+      }
+    }
+  }
+
+  return {
+    gridSize: _gridSize,
+    grid: _grid,
+    words: _words,
+    swaps: swaps,
+    startingSwaps: _startingSwaps,
+    initialize: initialize,
+    generateGrid: generateGrid,
+    fillWaffleGrid: fillWaffleGrid,
+    shuffle2DArray: shuffle2DArray,
+    pickWords: pickWords,
+    getGrid: getGrid,
+    getWords: getWords,
+    getRow: getRow,
+    getCol: getCol,
+    getSwaps: getSwaps,
+    resetSwaps: resetSwaps,
+    countAppearances: countAppearances,
+    updateTileStatuses: updateTileStatuses,
+    swapTile: swapTile // Expose swapTile function
+  };
 }
-
-
-
-
-
-
-
-
-
-// example usage
-
-// (async () => {
-//   const game = new Game(5);
-//   await game.initialize();
-//   const grid = game.getGrid();
-//   const words = game.getWords();
-//   // console.log(grid);
-//   console.log('words: ', words);
-
-// })();

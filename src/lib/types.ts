@@ -1,5 +1,5 @@
-export type Tile = { value: string; correctValue: string; status: string; x: number; y: number, swapStatus: string, hidden: boolean };
-export type Board = Tile[][] | null;
+// export type Tile = { value: string; correctValue: string; status: string; x: number; y: number, swapStatus: string, hidden: boolean };
+// export type Board = Tile[][] | null;
 export interface Tile {
   value: string;
   correctValue: string;
@@ -26,4 +26,7 @@ export type GameReturnType = {
   countAppearances: (arr: string[]) => { [key: string]: number; };
   updateTileStatuses: (grid: Board) => Board;
   swapTile: (tile: Tile) => void; // Added swapTile function
+  getSwaps: () => number;
+  swaps: number;
+  startingSwaps: number | null;
 };

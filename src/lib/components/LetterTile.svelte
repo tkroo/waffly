@@ -1,6 +1,6 @@
 <script>
   // let { tile, swapPair, delayFactor, handleTileClick, outOfTurns } = $props();
-  let { tile, handleTileClick, swapPair, delayFactor } = $props();
+  let { tile, handleTileClick, swapPair, delayFactor, solved, outOfTurns } = $props();
   let active = $derived.by(() => {
     return swapPair.length && swapPair[0].x == tile.x && swapPair[0].y == tile.y
   })
@@ -13,6 +13,7 @@
       handleTileClick(tile)
     }
   }}
+  disabled={solved || outOfTurns}
   class="tile bounce"
   class:active={tile.swapStatus == 'selected'}
   data-status={tile.status}
@@ -99,7 +100,7 @@
     background-color: var(--icolor);
   }
   .tile[data-status='x'] {
-    color: #efedea;
+    color: hsla(36, 14%, 93%, 0.6);
     background-color: var(--xcolor);
   }
   .tile[data-swapStatus='woo'][data-status='c'] {
@@ -107,16 +108,7 @@
     animation-delay: 0s !important;
     animation: woo2 0.4s ease-in-out 0s 2 reverse both running;
   }
-  .solved .tile[data-swapStatus='woo'] {
-    animation: unset;
-  }
 
-  .tile.blank {
-    border: none;
-    background-color: transparent;
-    color: transparent;
-    cursor: initial;
-  }
 
   @keyframes woo2 {
   0% {
