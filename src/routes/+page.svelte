@@ -1,4 +1,8 @@
 <script lang="ts">
+  import { page } from '$app/state';
+  import { onMount } from 'svelte';
+  import { onNavigate, pushState, goto } from '$app/navigation';
+  import { decodeText, encodeText } from '$lib/rot13.js';
   import type { Tile, Board, GameReturnType } from '$lib/types';
   import { createGame } from '$lib/game.svelte';
   import ChoiceButtons from "$lib/components/ChoiceButtons.svelte";
@@ -6,6 +10,8 @@
   import LetterTile from "$lib/components/LetterTile.svelte";
   import Messages from "$lib/components/Messages.svelte";
   import Stats from '$lib/components/Stats.svelte';
+
+  let { data } = $props();
 
   const title = 'waffleclone';
 
@@ -16,7 +22,6 @@
   let startingSwaps = $state();
   
   
-  let choiceMade = $state(false);
   let showPopup = $state(false);
   let debug = $state(false);
 
@@ -24,15 +29,63 @@
     debug = !debug;
   }
 
-  let foo = $state();
+  onMount(() => {
+    console.log('-- onMount');
+    console.log('-- data: ', data);
+    // getPuzzleFromSearchParam();
+    const p = getPuzzleFromSearchParam();
+    console.log('-- p.size: ', p?.size);
+    console.log('-- p.puzzle: ', p?.puzzle);
+    if (p?.puzzle.length) {
+      chooseGame(p.size, p.puzzle);
+    } else {
+      return null;
+    }
+  })
 
-  const setup = async (s: number) => {
+  const chooseGame = (s: number, puzzle: string[]) => {
+    if(puzzle !== undefined) {
+      setup(s, puzzle)
+    } else {
+      setup(s);
+    }
+    
+  }
+
+  const getPuzzleFromSearchParam = () => {
+    console.log('++ gPFSP: ', data.puzzle);
+    if (data.puzzle) {
+      const size:number = parseInt(data.puzzle[0]);
+      const puzzle = decodeText(data.puzzle);
+      return ({ size: size, puzzle: puzzle });
+    } else {
+      return null;
+    }
+  }
+
+  const updateURL = (p: string[]) => {
+    console.log('updateURL - p: ', p);
+    const encoded = encodeText(p);
+    console.log('updateURL - encoded: ', p);
+    page.url.searchParams.set('p', encoded);
+    pushState('', `/?p=${encoded}`);
+    goto(`/?p=${encoded}`);
+  }
+
+  const setup = async (s: number, puzzleArr: string[]) => {
+    console.log('==== setup(s, puzzleArr): s', s, 'puzzleArr', puzzleArr);
     // size = s;
     game = createGame(s);
     await game.initialize();
     const grid = game.getGrid();
-    words = game?.getWords();
+    if(puzzleArr) {
+      words = puzzleArr;
+    } else {
+      words = game?.getWords();
+    }
     if(words) {
+      // choiceMade = true;
+      updateURL([s.toString(), ...words]);
       board = game?.fillWaffleGrid(grid, words);
 
     } else {
@@ -50,7 +103,7 @@
     board = game?.shuffle2DArray(board) ?? [];
   }
 
-  function handleTileClick(tile: Tile) {
+  const handleTileClick = (tile: Tile) => {
     game?.swapTile(tile);
     game?.updateTileStatuses(board);
     swaps = game?.getSwaps();
@@ -71,12 +124,7 @@
     return true;
   })
 
-  function chooseGame(s: number) {
-    choiceMade = true;
-    setup(s);
-  }
-
-  function handleKeyDown(e: KeyboardEvent) {
+  const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key == '-') {
       debug = !debug;
     }
@@ -106,7 +154,7 @@
 
   let pageTitle = $derived.by(() => {
     if (board.length > 0) {
-      return `${title} ${board?.length}x${board?.length}`;
+      return `${board?.length}x${board?.length}${title}`;
     } else {
       return title
     }
@@ -117,16 +165,19 @@
 <svelte:head>
   <title>{pageTitle}</title>
 </svelte:head>
-<Header {title} {showPopup} bind:choiceMade />
+<Header {title} {showPopup} bind:words />
+<div class="testing">
+  <p>words: {words}</p>
+</div>
 {#if debug}
   <div class="debug">{words}</div>
 {/if}
-{#if !choiceMade}
+<!-- {#if !words?.length}
 <div class="choices">
   <ChoiceButtons {chooseGame} />
 </div>
-{/if}
-{#if board && choiceMade && words!.length > 0}
+{/if} -->
+{#if board && words!.length > 0}
 <Stats {board} />
 <div class="board" class:solved={solved} class:failed={outOfTurns} style="--cols: {board.length}" >
   {#each board as row, rowIndex}
@@ -149,12 +200,12 @@
 
 <Messages {toggleDebug} {swaps} {startingSwaps} {outOfTurns} {solved} {chooseGame} {shuffle} />
 {:else}
-{#if choiceMade && words?.length == 0}
-  <p class="error">Failed to create puzzle. Try again.</p>
-  <div class="choices">
-    <ChoiceButtons {chooseGame} />
-  </div>
-  {/if}
+<div class="choices">
+  <p>Choose a puzzle size.</p>
+  <ChoiceButtons {chooseGame} />
+</div>
+<!-- {#if words?.length == 0}
+  {/if} -->
 {/if}
 
 
@@ -212,5 +263,13 @@
     font-size: 1.5rem;
     text-align: center;
     margin: 1rem auto;
+  }
+  .testing {
+    font-size: 0.8rem;
+    line-height: 0.8rem;
+    border: 1px dashed rgb(90, 108, 126);
+  }
+  .testing p {
+    margin: 0;
   }
 </style>

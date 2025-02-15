@@ -1548,7 +1548,6 @@ export const wordlist_7 = [
   "presoak",
   "presume",
   "pretend",
-  "pretest",
   "pretzel",
   "prevail",
   "prevent",

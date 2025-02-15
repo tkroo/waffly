@@ -17,7 +17,6 @@ export const gameMessages = {
     "@?%#!!",
     "Sad Trombone.",
     "Aaargh!",
-    "Grrr!",
     "Bah!",
     "Doh!",
     "Ugghh!",
