@@ -24,12 +24,14 @@ export const gameMessages = {
     "Fiddlesticks!",
   ],
   close: [
-    "Yikes! Cutting it close!",
+    "That was a close one!",
     "Just squeaked by!",
     "Whew! That was close!",
     "Down to the wire!",
     "Close, but you did it!",
-    "You had me worried there!",
+    "Too close for comfort!",
+    "Had me worried there!"
+
     
   ]
 };

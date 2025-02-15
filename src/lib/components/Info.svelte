@@ -10,6 +10,12 @@
 <!-- <div class="popup" class:showPopup={myBools.showPopup}> -->
   <div class="content">
     <h2>How to Play</h2>
+    <p>
+      Unscramble all the words by swapping letters.
+      <br>
+      Click a letter to select, then click another to swap.
+    </p>
+    <h3>Colors are clues</h3>
     <ul class="items">
       <li class="col2"><span class="tile-little green">W</span>Letter is in the correct position.</li>
       <li class="col2"><span class="tile-little yellow">W</span>Letter is in the row or column, but wrong position.</li>
@@ -52,6 +58,8 @@
     margin: 0 auto;
     padding: 0;
     max-width: var(--maxwide);
+    display: flex;
+    flex-direction: column;
     /* background-color: pink; */
   }
 
@@ -84,8 +92,8 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    padding: 0 0.5rem;
-    height: 100%;
+    padding: 0 2rem;
+    flex-grow: 1;
     
   }
    .items {
@@ -107,8 +115,13 @@
     gap: 1rem;
    }
 
+   h3 {
+    margin: 0 0 1rem 0;
+   }
+
    h2 {
-    margin: 2rem 0 1rem -0.5rem;
+    /* margin: 2rem 0 1rem -0.5rem; */
+    margin: 2rem 0 1rem -1rem;
     border-bottom: 1px solid var(--bline);
     width: 100%;
    }

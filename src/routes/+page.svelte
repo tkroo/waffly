@@ -10,13 +10,11 @@
   const title = 'waffleclone';
 
   let board = $state({} as Board);
-  let size: number = $state(15)
   let game: GameReturnType | null;
-  let words = $state([]);
+  let words: string[] | null = $state([]);
   let swaps: number | null | undefined = $state();
   let startingSwaps = $state();
   
-  let swapPair = $state([]);
   
   let choiceMade = $state(false);
   let showPopup = $state(false);
@@ -26,30 +24,31 @@
     debug = !debug;
   }
 
+  let foo = $state();
+
   const setup = async (s: number) => {
-    size = s;
+    // size = s;
     game = createGame(s);
     await game.initialize();
     const grid = game.getGrid();
-    words = game.getWords();
-    board = game.fillWaffleGrid(grid, words);
-    board = game.shuffle2DArray(board);
-    game.resetSwaps();
-    swaps = game.startingSwaps;
-    startingSwaps = game.startingSwaps;
-    // board = filled;
-    
-  }
-  
-  const shuffle = () => {
-    game.resetSwaps();
-    swaps = game?.startingSwaps;
+    words = game?.getWords();
+    if(words) {
+      board = game?.fillWaffleGrid(grid, words);
+
+    } else {
+      throw new Error('words is undefined');
+    }
     board = game?.shuffle2DArray(board);
+    game?.resetSwaps();
+    swaps = game?.startingSwaps;
+    startingSwaps = game?.startingSwaps;
   }
 
-  // onMount(() => {
-  //   setup(size);
-  // })
+  const shuffle = () => {
+    game?.resetSwaps();
+    swaps = game?.startingSwaps;
+    board = game?.shuffle2DArray(board) ?? [];
+  }
 
   function handleTileClick(tile: Tile) {
     game?.swapTile(tile);
@@ -58,7 +57,7 @@
   }
 
   const outOfTurns = $derived.by((): boolean => {
-    return swaps <= 0 && !solved;
+    return swaps !== null && swaps !== undefined && swaps <= 0 && !solved;
   });
   
   const solved = $derived.by(() => {
@@ -94,21 +93,29 @@
       chooseGame(7);
     }
     if (e.key == 's') {
-      board = game?.solveGrid(board); 
-      board = game?.updateTileStatuses(board);
+      board = game?.solveGrid(board) ?? board;
+      board = game?.updateTileStatuses(board) ?? board;
     }
     if (e.key == ']') {
-      swaps++;
+      swaps = (swaps ?? 0) + 1;
     }
     if (e.key == '[') {
-      swaps--;
+      swaps = (swaps ?? 0) - 1;
     }
   }
+
+  let pageTitle = $derived.by(() => {
+    if (board.length > 0) {
+      return `${title} ${board?.length}x${board?.length}`;
+    } else {
+      return title
+    }
+  })
 
 </script>
 <svelte:window onkeydown={handleKeyDown} />
 <svelte:head>
-  <title>{title} {size}x{size}</title>
+  <title>{pageTitle}</title>
 </svelte:head>
 <Header {title} {showPopup} bind:choiceMade />
 {#if debug}
@@ -119,7 +126,7 @@
   <ChoiceButtons {chooseGame} />
 </div>
 {/if}
-{#if board && choiceMade && words.length > 0}
+{#if board && choiceMade && words!.length > 0}
 <Stats {board} />
 <div class="board" class:solved={solved} class:failed={outOfTurns} style="--cols: {board.length}" >
   {#each board as row, rowIndex}
@@ -129,7 +136,6 @@
           <LetterTile
             {handleTileClick}
             {tile}
-            {swapPair}
             {solved} {outOfTurns}
             delayFactor={colIndex+rowIndex}
           /> 
@@ -143,7 +149,7 @@
 
 <Messages {toggleDebug} {swaps} {startingSwaps} {outOfTurns} {solved} {chooseGame} {shuffle} />
 {:else}
-{#if choiceMade && words.length == 0}
+{#if choiceMade && words?.length == 0}
   <p class="error">Failed to create puzzle. Try again.</p>
   <div class="choices">
     <ChoiceButtons {chooseGame} />

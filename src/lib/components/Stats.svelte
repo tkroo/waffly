@@ -19,7 +19,7 @@
 
 <style>
   .graph {
-    margin: 0.5rem auto;
+    margin: 0.75rem auto;
     display: flex;
     /* gap: 1rem; */
     width: 100%;

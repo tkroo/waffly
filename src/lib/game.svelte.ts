@@ -170,8 +170,8 @@ export function createGame(gridSize: number): GameReturnType {
     return _words;
   }
   
-  function getSwaps(): number | null {
-    return swaps;
+  function getSwaps(): number {
+    return swaps ?? 0;
   }
   
   function resetSwaps() {

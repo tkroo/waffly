@@ -33,17 +33,33 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 0.25rem;
     height: 1.5rem;
     gap: 0.25rem;
   }
 
   .swapsnotice {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+  }
+
+  @media screen and (max-width: 500px) {
+    .prog {
+      margin-top: 0.75rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .swapsnotice {
+      text-align: center;
+    }
+    progress[value],
+    progress[value]::-webkit-progress-bar {
+      width: 100%;
+    }
   }
 
 
   .win-loose {
-    font-size: 2rem;
+    font-size: 1.6rem;
     text-align: center;
   }
   

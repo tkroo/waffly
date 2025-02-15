@@ -1,14 +1,9 @@
 <script>
-  // let { tile, swapPair, delayFactor, handleTileClick, outOfTurns } = $props();
-  let { tile, handleTileClick, swapPair, delayFactor, solved, outOfTurns } = $props();
-  let active = $derived.by(() => {
-    return swapPair.length && swapPair[0].x == tile.x && swapPair[0].y == tile.y
-  })
+  let { tile, handleTileClick, delayFactor, solved, outOfTurns } = $props();
 </script>
 
 <button
   onclick={() => {
-    // if (tile.value != tile.correctValue && !outOfTurns) {
     if (tile.value != tile.correctValue) {
       handleTileClick(tile)
     }
@@ -32,7 +27,7 @@
     align-items: center;
     justify-content: center;
     user-select: none;
-    font-size: inherit;
+    /* font-size: inherit; */
     font-size: clamp(2rem, 4cqi, 3rem);
     /* font-size: 1rem; */
     font-weight: bold;

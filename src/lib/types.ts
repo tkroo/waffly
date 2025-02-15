@@ -13,6 +13,8 @@ export type Board = Tile[][];
 export type GameReturnType = {
   gridSize: number;
   grid: Board;
+  swaps: number;
+  startingSwaps: number | null;
   words: string[] | null;
   initialize: () => Promise<void>;
   generateGrid: (gridSize: number) => Board;
@@ -23,11 +25,10 @@ export type GameReturnType = {
   getWords: () => string[] | null;
   getRow: (row: number, arr: Board) => Tile[];
   getCol: (col: number, arr: Board) => Tile[];
-  solveGrid: (grid: Board) => Board;
-  countAppearances: (arr: string[]) => { [key: string]: number; };
-  updateTileStatuses: (grid: Board) => Board;
-  swapTile: (tile: Tile) => void; // Added swapTile function
   getSwaps: () => number;
-  swaps: number;
-  startingSwaps: number | null;
+  solveGrid: (grid: Board) => Board;
+  updateTileStatuses: (grid: Board) => Board;
+  countAppearances: (arr: string[]) => { [key: string]: number; };
+  swapTile: (tile: Tile) => void; // Added swapTile function
+  resetSwaps: () => void;
 };
