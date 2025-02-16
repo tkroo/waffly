@@ -238,7 +238,7 @@ export function createGame(gridSize: number): GameReturnType {
       // UI needs to update tile's appearance based on swapStatus
     } else {
       // Second click: swap tiles
-      if (_selectedTile === tile) {
+      if (_selectedTile === tile || _selectedTile.value == tile.value) {
         // Deselect if the same tile is clicked again
         _selectedTile.swapStatus = ''; // Clear selected state
         _selectedTile = null;

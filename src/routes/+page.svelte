@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { page } from '$app/state';
+  import { navigating, page } from '$app/state';
   import { onMount } from 'svelte';
-  import { onNavigate, pushState, goto } from '$app/navigation';
+  import { onNavigate, beforeNavigate, pushState, goto } from '$app/navigation';
   import { decodeText, encodeText } from '$lib/rot13.js';
   import type { Tile, Board, GameReturnType } from '$lib/types';
   import { createGame } from '$lib/game.svelte';
+  import { myBools } from '$lib/utils.svelte.js';
   import ChoiceButtons from "$lib/components/ChoiceButtons.svelte";
+	import Debug from '$lib/components/Debug.svelte';
 	import Header from '$lib/components/Header.svelte';
   import LetterTile from "$lib/components/LetterTile.svelte";
   import Messages from "$lib/components/Messages.svelte";
@@ -21,58 +23,74 @@
   let swaps: number | null | undefined = $state();
   let startingSwaps = $state();
   
-  
+  let myURL = $state();
   let showPopup = $state(false);
-  let debug = $state(false);
+  
+  
 
   const toggleDebug = () => {
-    debug = !debug;
+    myBools.debug = !myBools.debug;
   }
 
   onMount(() => {
-    console.log('-- onMount');
-    console.log('-- data: ', data);
-    // getPuzzleFromSearchParam();
+    console.log('-- ONMOUNT ONMOUNT ONMOUNT ONMOUNT ONMOUNT');
+    checkForPuzzle();
+  })
+
+  const handleNav = () => {
+    checkForPuzzle();
+  }
+
+  const checkForPuzzle = () => {
     const p = getPuzzleFromSearchParam();
-    console.log('-- p.size: ', p?.size);
-    console.log('-- p.puzzle: ', p?.puzzle);
-    if (p?.puzzle.length) {
+    if (p !== null) {
       chooseGame(p.size, p.puzzle);
     } else {
       return null;
     }
-  })
+  }
 
   const chooseGame = (s: number, puzzle: string[]) => {
     if(puzzle !== undefined) {
       setup(s, puzzle)
     } else {
-      setup(s);
+      setup(s, null);
     }
     
   }
 
   const getPuzzleFromSearchParam = () => {
-    console.log('++ gPFSP: ', data.puzzle);
-    if (data.puzzle) {
-      const size:number = parseInt(data.puzzle[0]);
-      const puzzle = decodeText(data.puzzle);
+    const p = page.url.searchParams.get('p');
+    if (p !== null) {
+      const puzzle = decodeText(p);
+      const size = parseInt(p[0]);
       return ({ size: size, puzzle: puzzle });
     } else {
-      return null;
-    }
+       return null;
+     }
+
+    // if (data.puzzle) {
+    //   const size:number = parseInt(data.puzzle[0]);
+    //   const puzzle = decodeText(data.puzzle);
+    //   console.log('++ gPFSP: size: ', size, 'puzzle: ', puzzle);
+    //   return ({ size: size, puzzle: puzzle });
+    // } else {
+    //   console.log('++ gPFSP: NO PUZZLE IN SEARCH PARAMS');
+    //   return null;
+    // }
   }
 
   const updateURL = (p: string[]) => {
-    console.log('updateURL - p: ', p);
     const encoded = encodeText(p);
-    console.log('updateURL - encoded: ', p);
     page.url.searchParams.set('p', encoded);
-    pushState('', `/?p=${encoded}`);
-    goto(`/?p=${encoded}`);
+    page.url.searchParams.set('w', p.join('-'));
+    myURL = page.url;
+    pushState(page.url, {});
+    
   }
 
-  const setup = async (s: number, puzzleArr: string[]) => {
+  const setup = async (s: number, puzzleArr: string[] | null) => {
+    console.log('\n\n\n====');
     console.log('==== setup(s, puzzleArr): s', s, 'puzzleArr', puzzleArr);
     // size = s;
     game = createGame(s);
@@ -80,17 +98,17 @@
     const grid = game.getGrid();
     if(puzzleArr) {
       words = puzzleArr;
+      board = game?.fillWaffleGrid(grid, words);
     } else {
       words = game?.getWords();
+      updateURL([s.toString(), ...words]);
     }
     if(words) {
       // choiceMade = true;
-      updateURL([s.toString(), ...words]);
       board = game?.fillWaffleGrid(grid, words);
-
     } else {
       throw new Error('words is undefined');
-    }
+  }
     board = game?.shuffle2DArray(board);
     game?.resetSwaps();
     swaps = game?.startingSwaps;
@@ -124,9 +142,14 @@
     return true;
   })
 
+  const solvePuzzle = () => {
+    board = game?.solveGrid(board) ?? board;
+    board = game?.updateTileStatuses(board) ?? board;
+  }
+
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key == '-') {
-      debug = !debug;
+      myBools.debug = !myBools.debug;
     }
     if (e.key == '=') {
       shuffle();
@@ -141,8 +164,7 @@
       chooseGame(7);
     }
     if (e.key == 's') {
-      board = game?.solveGrid(board) ?? board;
-      board = game?.updateTileStatuses(board) ?? board;
+      solvePuzzle()
     }
     if (e.key == ']') {
       swaps = (swaps ?? 0) + 1;
@@ -161,15 +183,12 @@
   })
 
 </script>
-<svelte:window onkeydown={handleKeyDown} />
+<svelte:window onkeydown={handleKeyDown} onpopstate={() => handleNav()}/>
 <svelte:head>
   <title>{pageTitle}</title>
 </svelte:head>
 <Header {title} {showPopup} bind:words />
-<div class="testing">
-  <p>words: {words}</p>
-</div>
-{#if debug}
+{#if myBools.debug}
   <div class="debug">{words}</div>
 {/if}
 <!-- {#if !words?.length}
@@ -199,6 +218,13 @@
 </div>
 
 <Messages {toggleDebug} {swaps} {startingSwaps} {outOfTurns} {solved} {chooseGame} {shuffle} />
+<Debug {board} {words} />
+{#if myBools.debug}
+<div class="testing">
+  <p>words: {words}</p>
+  <p>myURL: {JSON.stringify(myURL)}</p>
+</div>
+{/if}
 {:else}
 <div class="choices">
   <p>Choose a puzzle size.</p>
@@ -266,10 +292,16 @@
   }
   .testing {
     font-size: 0.8rem;
-    line-height: 0.8rem;
     border: 1px dashed rgb(90, 108, 126);
   }
   .testing p {
     margin: 0;
+  }
+  .testing button {
+    font-size: 0.8rem;
+    padding: 0.125rem 0.5rem;
+    /* border: 1px solid var(--bg); */
+    color: var(--fg);
+    background-color: var(--bg);
   }
 </style>

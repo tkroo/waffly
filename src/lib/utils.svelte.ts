@@ -1,3 +1,4 @@
 export const myBools = $state({
-  highContrast: false
+  highContrast: false,
+  debug: false,
 })
