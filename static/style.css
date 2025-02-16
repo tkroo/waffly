@@ -45,6 +45,7 @@ html {
 }
 
 main {
+  position: relative;
   margin: 0 auto;
   max-width: var(--maxwide);
   /* border: 1px dashed var(--icolor); */

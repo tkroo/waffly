@@ -67,32 +67,18 @@
       return ({ size: size, puzzle: puzzle });
     } else {
        return null;
-     }
-
-    // if (data.puzzle) {
-    //   const size:number = parseInt(data.puzzle[0]);
-    //   const puzzle = decodeText(data.puzzle);
-    //   console.log('++ gPFSP: size: ', size, 'puzzle: ', puzzle);
-    //   return ({ size: size, puzzle: puzzle });
-    // } else {
-    //   console.log('++ gPFSP: NO PUZZLE IN SEARCH PARAMS');
-    //   return null;
-    // }
+    }
   }
 
   const updateURL = (p: string[]) => {
     const encoded = encodeText(p);
     page.url.searchParams.set('p', encoded);
-    page.url.searchParams.set('w', p.join('-'));
+    // page.url.searchParams.set('w', p.join('-'));
     myURL = page.url;
     pushState(page.url, {});
-    
   }
 
   const setup = async (s: number, puzzleArr: string[] | null) => {
-    console.log('\n\n\n====');
-    console.log('==== setup(s, puzzleArr): s', s, 'puzzleArr', puzzleArr);
-    // size = s;
     game = createGame(s);
     await game.initialize();
     const grid = game.getGrid();
@@ -104,7 +90,6 @@
       updateURL([s.toString(), ...words]);
     }
     if(words) {
-      // choiceMade = true;
       board = game?.fillWaffleGrid(grid, words);
     } else {
       throw new Error('words is undefined');
@@ -191,6 +176,14 @@
 {#if myBools.debug}
   <div class="debug">{words}</div>
 {/if}
+{#if solved}
+  <div class="test2">
+    {#each words as word}
+    <p>{word}</p>
+    {/each}
+  </div>
+{/if}
+
 <!-- {#if !words?.length}
 <div class="choices">
   <ChoiceButtons {chooseGame} />
@@ -283,6 +276,26 @@
     padding: 0.5rem 1rem;
     z-index: 1000;
     font-size: 0.8rem;
+  }
+
+  .test2 {
+    --offset: 140px;
+    position: absolute;
+    top: 0;
+    width: var(--offset);
+    left: calc(-1 * var(--offset));
+    background-color: hsla(0, 0%, 0%, 0.25);
+    color: #fff;
+    padding: 0.5rem 1rem;
+    z-index: 1000;
+    font-family: monospace;
+    font-size: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .test2 p {
+    margin: 0;
   }
   .error {
     color: rgb(211, 64, 64);
