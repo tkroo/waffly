@@ -71,12 +71,11 @@ export const pickSixWords = async (): Promise<string[]> => {
       // Add words to the set and check if all 6 are unique
       words.add(word0).add(word1).add(word2).add(word3).add(word4).add(word5);
       if (words.size === 6) {
-        // console.log(`FOUND SIX WORDS in ${attempt} attempts.`);
         return [...words];
       }
       words.clear(); // Clear set if not all words are unique
     } catch (e) {
-      // console.log('error: ', e);
+      console.log('error: ', e);
     }
   }
   return [];
@@ -120,7 +119,6 @@ export const pickEightWords = async (): Promise<string[]> => {
       // Add words to the set and check if all 8 are unique
       words.add(word0).add(word1).add(word2).add(word3).add(word4).add(word5).add(word6).add(word7);
       if (words.size === 8) {
-        // console.log(`FOUND EIGHT WORDS in ${attempt} attempts.`);
         return [...words];
       }
       words.clear(); // Clear set if not all words are unique
@@ -129,6 +127,6 @@ export const pickEightWords = async (): Promise<string[]> => {
     }
   }
 
-  // console.log(`FAILED TO CHOOSE EIGHT WORDS after ${maxAttempts} attempts.`);
+  console.log(`FAILED TO CHOOSE EIGHT WORDS after ${maxAttempts} attempts.`);
   return [];
 };

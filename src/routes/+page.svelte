@@ -35,7 +35,6 @@
   }
 
   onMount(() => {
-    console.log('-- ONMOUNT ONMOUNT ONMOUNT ONMOUNT ONMOUNT');
     checkForPuzzle();
   })
 
@@ -185,7 +184,7 @@
 {/if} -->
 
 {#if board && words!.length > 0}
-<Progress {swaps} {startingSwaps} {toggleDebug} />
+<Progress {swaps} {startingSwaps} {toggleDebug} {board} />
 <div class="board" class:solved={solved} class:failed={outOfTurns} style="--cols: {board.length}" >
   {#each board as row, rowIndex}
     <div class="row" data-row={rowIndex}>
@@ -205,9 +204,9 @@
   {/each}
 </div>
 <!-- <Stats {board} /> -->
- <div class="chart">
-   <PieChart2 {board} />
- </div>
+ <!-- <div class="chart">
+   <PieChart2 {board} height={'2'} />
+ </div> -->
 
 <Messages {toggleDebug} {swaps} {startingSwaps} {outOfTurns} {solved} {chooseGame} {shuffle} />
 <Debug {board} {words} />

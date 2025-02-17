@@ -157,7 +157,6 @@ export function createGame(gridSize: number): GameReturnType {
   }
 
   async function pickWords(size: number): Promise<string[]> {
-    console.log('*** pickWords: ', size);
     const words = size === 5 ? await pickSixWords() : await pickEightWords();
     return words;
   }

@@ -14,7 +14,6 @@ function rot13(str: string) {
  * @returns {string} The URL string (e.g., "obfuscatedValue").
  */
 function encodeText(wordList: string[]) {
-  console.log('encodeText() wordList: ', wordList);
   if (!Array.isArray(wordList)) {
     throw new Error("wordList must be an array");
   }
