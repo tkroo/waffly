@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { navigating, page } from '$app/state';
+  import { page } from '$app/state';
   import { onMount } from 'svelte';
-  import { onNavigate, beforeNavigate, pushState, goto } from '$app/navigation';
+  import { pushState } from '$app/navigation';
   import { decodeText, encodeText } from '$lib/rot13.js';
   import type { Tile, Board, GameReturnType } from '$lib/types';
   import { createGame } from '$lib/game.svelte';
@@ -11,18 +11,20 @@
 	import Header from '$lib/components/Header.svelte';
   import LetterTile from "$lib/components/LetterTile.svelte";
   import Messages from "$lib/components/Messages.svelte";
-  import Stats from '$lib/components/Stats.svelte';
+  import Progress from "$lib/components/Progress.svelte";
+  // import Stats from '$lib/components/Stats.svelte';
+	import PieChart2 from '$lib/components/PieChart2.svelte';
 
-  let { data } = $props();
+  // let { data } = $props();
 
   const title = 'waffleclone';
-
   let board = $state({} as Board);
-  let game: GameReturnType | null;
   let words: string[] | null = $state([]);
+  let game: GameReturnType | null;
   let swaps: number | null | undefined = $state();
-  let startingSwaps = $state();
+
   
+  let startingSwaps = $state();
   let myURL = $state();
   let showPopup = $state(false);
   
@@ -173,24 +175,17 @@
   <title>{pageTitle}</title>
 </svelte:head>
 <Header {title} {showPopup} bind:words />
-{#if myBools.debug}
-  <div class="debug">{words}</div>
-{/if}
-{#if solved}
+
+<!-- {#if solved && words?.length > 0}
   <div class="test2">
     {#each words as word}
     <p>{word}</p>
     {/each}
   </div>
-{/if}
-
-<!-- {#if !words?.length}
-<div class="choices">
-  <ChoiceButtons {chooseGame} />
-</div>
 {/if} -->
+
 {#if board && words!.length > 0}
-<Stats {board} />
+<Progress {swaps} {startingSwaps} {toggleDebug} />
 <div class="board" class:solved={solved} class:failed={outOfTurns} style="--cols: {board.length}" >
   {#each board as row, rowIndex}
     <div class="row" data-row={rowIndex}>
@@ -209,15 +204,13 @@
     </div>
   {/each}
 </div>
+<!-- <Stats {board} /> -->
+ <div class="chart">
+   <PieChart2 {board} />
+ </div>
 
 <Messages {toggleDebug} {swaps} {startingSwaps} {outOfTurns} {solved} {chooseGame} {shuffle} />
 <Debug {board} {words} />
-{#if myBools.debug}
-<div class="testing">
-  <p>words: {words}</p>
-  <p>myURL: {JSON.stringify(myURL)}</p>
-</div>
-{/if}
 {:else}
 <div class="choices">
   <p>Choose a puzzle size.</p>
@@ -229,10 +222,24 @@
 
 
 <style>
+  .chart {
+    width: 100%;
+    display: flex;
+    justify-content: end;
+    margin: 0.5rem 0;
+  }
+  .tile.chart {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .choices {
     margin-top: 5rem;
     font-size: 1.5rem;
     width: 100%;
+    color: var(--bg);
   }
   .board {
     --gap: 0.5rem;
@@ -267,18 +274,7 @@
     } 
   }
 
-  .debug {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    background-color: hsla(0, 0%, 0%, 0.25);
-    color: #fff;
-    padding: 0.5rem 1rem;
-    z-index: 1000;
-    font-size: 0.8rem;
-  }
-
-  .test2 {
+  /* .test2 {
     --offset: 140px;
     position: absolute;
     top: 0;
@@ -296,25 +292,5 @@
   }
   .test2 p {
     margin: 0;
-  }
-  .error {
-    color: rgb(211, 64, 64);
-    font-size: 1.5rem;
-    text-align: center;
-    margin: 1rem auto;
-  }
-  .testing {
-    font-size: 0.8rem;
-    border: 1px dashed rgb(90, 108, 126);
-  }
-  .testing p {
-    margin: 0;
-  }
-  .testing button {
-    font-size: 0.8rem;
-    padding: 0.125rem 0.5rem;
-    /* border: 1px solid var(--bg); */
-    color: var(--fg);
-    background-color: var(--bg);
-  }
+  } */
 </style>
