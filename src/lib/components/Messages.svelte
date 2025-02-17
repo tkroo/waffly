@@ -28,6 +28,7 @@
   }
 
   .win-loose {
+    margin-top: 1rem;
     font-size: 1.6rem;
     text-align: center;
   }
