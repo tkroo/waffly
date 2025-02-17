@@ -749,7 +749,6 @@ export const wordlist_7 = [
   "dismiss",
   "disobey",
   "display",
-  "disport",
   "dispose",
   "dispute",
   "disrobe",
