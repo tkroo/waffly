@@ -1234,7 +1234,6 @@ export const wordlist_7 = [
   "intense",
   "interim",
   "interns",
-  "introit",
   "intrude",
   "intrust",
   "intwine",
