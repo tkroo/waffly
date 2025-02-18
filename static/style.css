@@ -60,6 +60,15 @@ main {
   --wavecolor3: hsl(43, 80%, 53%);
 }
 
+.choices {
+  font-size: 1.5rem;
+  width: 100%;
+  color: var(--bg);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
 button {
   border-radius: var(--radius);
   border: 1px solid transparent;
@@ -76,26 +85,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-.againbutton {
-  /* min-width: 300px; */
-  width: 100%;
-  border-radius: var(--radius);
-  color: var(--ccolor);
-  background-color: #fff;
-  padding: 0.5rem 1rem;
-  text-decoration: none;
-  font-size: 1.25rem;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 1rem auto;
-}
 
-.againbutton:hover {
-  color: #fff;
-  background-color: var(--ccolor);
-}
 
 
 

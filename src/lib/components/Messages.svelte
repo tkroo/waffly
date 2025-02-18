@@ -1,23 +1,35 @@
 <script lang="ts">
-  import AgainButton from "$lib/components/AgainButton.svelte";
-  import ChoiceButtons from "$lib/components/ChoiceButtons.svelte";
   import { gameMessages } from "$lib/game_messages";
-	// import Progress from "./Progress.svelte";
-  let { swaps, startingSwaps, outOfTurns, solved, shuffle, chooseGame, toggleDebug } = $props();
+  let { myButton, swaps, outOfTurns, solved, shuffle, chooseGame } = $props();
+  import { fade } from "svelte/transition";
 </script>
 
+
+
 <div class="message">
-  <!-- <Progress {swaps} {startingSwaps} {toggleDebug} /> -->
-  <div class="win-loose">
-    {#if solved}
-    {swaps < 2 ? gameMessages.close[Math.floor(Math.random() * gameMessages.close.length)] : gameMessages.won[Math.floor(Math.random() * gameMessages.won.length)]}
-    <ChoiceButtons {chooseGame} />
-    {/if}
-    {#if outOfTurns}{gameMessages.lost[Math.floor(Math.random() * gameMessages.lost.length)]}
-    <AgainButton message="Replay?" func={shuffle} />
-    <ChoiceButtons {chooseGame} />
-    {/if}
-  </div>
+  {#if solved}
+    <div transition:fade class="fade-container">
+      <div class="win-loose">
+        {swaps < 2 ? gameMessages.close[Math.floor(Math.random() * gameMessages.close.length)] : gameMessages.won[Math.floor(Math.random() * gameMessages.won.length)]}
+      </div>
+       <div class="choices">
+        {@render myButton("Regular waffle (5x5)", "50%", () => chooseGame(5))}
+        {@render myButton("Large waffle (7x7)", "50%", () => chooseGame(7))}
+       </div>
+    </div>
+  {/if}
+  {#if outOfTurns}
+    <div transition:fade class="fade-container">
+      <div class="win-loose">
+        {gameMessages.lost[Math.floor(Math.random() * gameMessages.lost.length)]}
+      </div>
+      <div class="choices">
+        {@render myButton("Replay ?", "grid-column: 1 / span 2;", () => shuffle())}
+        {@render myButton("Regular waffle (5x5)", "", () => chooseGame(5))}
+        {@render myButton("Large waffle (7x7)", "", () => chooseGame(7))}
+      </div>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -28,7 +40,7 @@
   }
 
   .win-loose {
-    margin-top: 1rem;
+    margin: 1rem auto;
     font-size: 1.6rem;
     text-align: center;
   }
