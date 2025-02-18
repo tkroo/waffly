@@ -36,7 +36,7 @@
     user-select: none;
     /* font-size: inherit; */
     font-size: clamp(1.5rem, 48cqi, 4rem);
-    font-weight: bold;
+    font-weight: 700;
     aspect-ratio: 1;
     text-transform: uppercase;
     border-radius: 0.5rem;

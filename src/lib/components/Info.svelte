@@ -26,6 +26,19 @@
       <input type="checkbox" id="highContrast" bind:checked={myBools.highContrast}>
       High contrast colors
     </label>
+    <h2>Keyboard</h2>
+    <ul class="items smaller">
+      <li class="col2"><span class="tile-little key">5</span>New 5x5</li>
+      <li class="col2"><span class="tile-little key">7</span>New 7x7</li>
+      <li class="col2"><span class="tile-little key">s</span>Solve</li>
+      <li class="col2"><span class="tile-little key">r</span>Reset puzzle</li>
+      <li class="col2"><span class="tile-little key">?</span>Toggle info</li>
+      <li>cheats</li>
+      <li class="col2"><span class="tile-little key">-</span>Toggle answer</li>
+      <li class="col2"><span class="tile-little key">]</span>Increase swaps</li>
+      <li class="col2"><span class="tile-little key">[</span>Decrease swaps</li>
+      <li class="col2"><span class="tile-little key">=</span>Shuffle</li>
+    </ul>
     <!-- 
     <label for="easier">
       <input type="checkbox" id="easier" bind:checked={myBools.easierMode}>
@@ -107,6 +120,12 @@
     line-height: 1.5;
    }
 
+   .smaller {
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    line-height: 1;
+   }
+
    .col2 {
     display: flex;
     flex-direction: row;
@@ -141,6 +160,13 @@
     aspect-ratio: 1/1;
     border-radius: var(--radius);
     color: #fff;
+  }
+  .tile-little.key {
+    border: 1px solid var(--bg);
+    width: 1.5rem;
+    height: 1.5rem;
+    font-size: 0.75rem;
+    font-weight: normal;
   }
   .green {
     background-color: var(--ccolor);

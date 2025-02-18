@@ -21,6 +21,7 @@
   let swaps: number | null | undefined = $state();  
   let startingSwaps = $state();
   let showPopup = $state(false);
+  let initialScramble = $state.raw({} as Board);
   
 
   const toggleDebug = () => {
@@ -85,8 +86,9 @@
       board = game?.fillWaffleGrid(grid, words);
     } else {
       throw new Error('words is undefined');
-  }
+    }
     board = game?.shuffle2DArray(board);
+    initialScramble = structuredClone($state.snapshot(board));
     game?.resetSwaps();
     swaps = game?.startingSwaps;
     startingSwaps = game?.startingSwaps;
@@ -119,6 +121,13 @@
     return true;
   })
 
+  const resetToInitialScramble = () => {
+    board = initialScramble;
+    game?.updateTileStatuses(board);
+    game?.updateTileStatuses(board);
+    game?.resetSwaps();
+  }
+
   const solvePuzzle = () => {
     board = game?.solveGrid(board) ?? board;
     board = game?.updateTileStatuses(board) ?? board;
@@ -145,6 +154,12 @@
     }
     if (e.key == '[') {
       swaps = (swaps ?? 0) - 1;
+    }
+    if (e.key == '?') {
+      showPopup = !showPopup;
+    }
+    if (e.key == 'r') {
+      resetToInitialScramble();
     }
   }
 
@@ -193,7 +208,7 @@
   </div>
 
   <Messages {myButton} {swaps} {outOfTurns} {solved} {chooseGame} {shuffle} />
-  <Debug {board} {words} />
+  <Debug {board} {words} {initialScramble} />
 {:else}
   <h2>Choose a puzzle size.</h2>
   <div class="choices">

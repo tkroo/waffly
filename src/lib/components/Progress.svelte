@@ -5,7 +5,7 @@
 <div class="prog">
   <progress value={swaps} max={startingSwaps}></progress>
   <button class="swapsnotice" onclick={toggleDebug}>{swaps} swaps remain</button>
-  <PieChart2 {board} height={'1'} />
+  <!-- <PieChart2 {board} height={'1'} /> -->
 </div>
 
 <style>
