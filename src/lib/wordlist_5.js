@@ -2715,7 +2715,6 @@ const words_5 = [
   "truck",
   "truer",
   "truly",
-  "trump",
   "trunk",
   "trust",
   "truth",
