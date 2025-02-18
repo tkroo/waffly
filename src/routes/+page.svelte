@@ -44,7 +44,7 @@
     }
   }
 
-  const chooseGame = (s: number, puzzle: string[]) => {
+  const chooseGame = (s: number, puzzle: string[] | null = null) => {
     if(puzzle !== undefined) {
       setup(s, puzzle)
     } else {
@@ -197,8 +197,8 @@
 {:else}
   <h2>Choose a puzzle size.</h2>
   <div class="choices">
-    {@render myButton("Regular waffle (5x5)", "50%", () => chooseGame(5))}
-    {@render myButton("Large waffle (7x7)", "50%", () => chooseGame(7))}
+    {@render myButton("5x5 Puzzle", "", () => chooseGame(5))}
+    {@render myButton("7x7 Puzzle", "", () => chooseGame(7))}
   </div>
 {/if}
 
@@ -245,7 +245,7 @@
     background-color: #fff;
     padding: 0.5rem 1rem;
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 1.25rem;
     font-weight: bold;
     display: inline-flex;
     align-items: center;

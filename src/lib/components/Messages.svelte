@@ -13,8 +13,8 @@
         {swaps < 2 ? gameMessages.close[Math.floor(Math.random() * gameMessages.close.length)] : gameMessages.won[Math.floor(Math.random() * gameMessages.won.length)]}
       </div>
        <div class="choices">
-        {@render myButton("Regular waffle (5x5)", "50%", () => chooseGame(5))}
-        {@render myButton("Large waffle (7x7)", "50%", () => chooseGame(7))}
+        {@render myButton("5x5 Puzzle", "", () => chooseGame(5))}
+        {@render myButton("7x7 Puzzle", "", () => chooseGame(7))}
        </div>
     </div>
   {/if}
@@ -25,8 +25,8 @@
       </div>
       <div class="choices">
         {@render myButton("Replay ?", "grid-column: 1 / span 2;", () => shuffle())}
-        {@render myButton("Regular waffle (5x5)", "", () => chooseGame(5))}
-        {@render myButton("Large waffle (7x7)", "", () => chooseGame(7))}
+        {@render myButton("5x5 Puzzle", "", () => chooseGame(5))}
+        {@render myButton("7x7 Puzzle", "", () => chooseGame(7))}
       </div>
     </div>
   {/if}

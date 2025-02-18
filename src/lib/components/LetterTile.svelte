@@ -2,25 +2,32 @@
   let { tile, handleTileClick, delayFactor, solved, outOfTurns } = $props();
 </script>
 
-<button
-  onclick={() => {
-    if (tile.value != tile.correctValue) {
-      handleTileClick(tile)
-    }
-  }}
-  disabled={solved || outOfTurns}
-  class="tile bounce"
-  class:active={tile.swapStatus == 'selected'}
-  data-status={tile.status}
-  data-swapStatus={tile.swapStatus == 'selected' ? 'woo' : ''}
-  style="animation-delay: {delayFactor * 50}ms"
-  >
-  <span class="answer">{tile.correctValue}</span>
-  <div class="inner"></div>
-  {tile.value}
-</button>
+<div class="tile-wrap">
+  <button
+    onclick={() => {
+      if (tile.value != tile.correctValue) {
+        handleTileClick(tile)
+      }
+    }}
+    disabled={solved || outOfTurns}
+    class="tile bounce"
+    class:active={tile.swapStatus == 'selected'}
+    data-status={tile.status}
+    data-swapStatus={tile.swapStatus == 'selected' ? 'woo' : ''}
+    style="animation-delay: {delayFactor * 50}ms"
+    >
+    <!-- <span class="answer">{tile.correctValue}</span> -->
+    <div class="inner"></div>
+    {tile.value}
+  </button>
+</div>
 
 <style>
+  .tile-wrap {
+    container-type: inline-size;
+    /* width: 100%; */
+    /* height: 100%; */
+  }
   .tile {
     position: relative;
     display: flex;
@@ -28,8 +35,7 @@
     justify-content: center;
     user-select: none;
     /* font-size: inherit; */
-    font-size: clamp(2rem, 4cqi, 3rem);
-    /* font-size: 1rem; */
+    font-size: clamp(1.5rem, 48cqi, 4rem);
     font-weight: bold;
     aspect-ratio: 1;
     text-transform: uppercase;
@@ -38,38 +44,40 @@
     z-index: 20;
     transition: all 0.2s ease-in;
     min-width: 1rem;
+    width: 100%;
+    height: 100%;
+  }
+  .tile .inner {
+    font-size: inherit;
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: var(--radius);
+    border: 4px solid hsla(0, 0%, 80%, 0);
+    transition: all 0.2s ease-out;
+    /* background-color: hsla(200, 75%, 100%, 0.25); */
   }
 
-  .tile .inner {
-  position: absolute;
-  z-index: -1;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  border-radius: var(--radius);
-  border: 4px solid hsla(0, 0%, 80%, 0);
-  transition: all 0.2s ease-out;
-  /* background-color: hsla(200, 75%, 100%, 0.25); */
-}
 
-
-.tile .answer {
-  position: absolute;
-  z-index: 2;
-  top: 0.2rem;
-  right: 0.2rem;
-  font-size: 0.7rem;
-  opacity: 0;
-  background-color: #000;
-  color: #fff;
-  /* box-shadow: 2px 2px 4px 2px hsla(0, 0%, 0%, 0.25); */
-  height: 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  aspect-ratio: 1/1;
-  border-radius: var(--radius);
-}
+  .tile .answer {
+    position: absolute;
+    z-index: 2;
+    top: 0.2rem;
+    right: 0.2rem;
+    font-size: 0.7rem;
+    opacity: 0;
+    background-color: #000;
+    color: #fff;
+    /* box-shadow: 2px 2px 4px 2px hsla(0, 0%, 0%, 0.25); */
+    height: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    aspect-ratio: 1/1;
+    border-radius: var(--radius);
+  }
 
   .cheat .answer {
     opacity: 1 !important;
