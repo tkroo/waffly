@@ -18,11 +18,10 @@
   let board = $state({} as Board);
   let words: string[] | null = $state([]);
   let game: GameReturnType | null;
-  let swaps: number | null | undefined = $state();  
+  let currentTurn: number | null | undefined = $state();
   let startingSwaps = $state();
   let showPopup = $state(false);
   let initialScramble = $state.raw({} as Board);
-  
 
   const toggleDebug = () => {
     myBools.debug = !myBools.debug;
@@ -45,7 +44,8 @@
     }
   }
 
-  const chooseGame = (s: number, puzzle: string[] | null = null) => {
+  const chooseGame = async (s: number, puzzle: string[] | null = null) => {
+    await new Promise(resolve => setTimeout(resolve, 10)); // Add a short delay
     if(puzzle !== undefined) {
       setup(s, puzzle)
     } else {
@@ -72,6 +72,7 @@
   }
 
   const setup = async (s: number, puzzleArr: string[] | null) => {
+    await new Promise(resolve => setTimeout(resolve, 10)); // Add a short delay
     game = createGame(s);
     await game.initialize();
     const grid = game.getGrid();
@@ -89,25 +90,25 @@
     }
     board = game?.shuffle2DArray(board);
     initialScramble = structuredClone($state.snapshot(board));
-    game?.resetSwaps();
-    swaps = game?.startingSwaps;
+    game?.resetTurns();
+    currentTurn = game?.startingSwaps;
     startingSwaps = game?.startingSwaps;
   }
 
   const shuffle = () => {
-    game?.resetSwaps();
-    swaps = game?.startingSwaps;
+    game?.resetTurns();
+    currentTurn = game?.startingSwaps;
     board = game?.shuffle2DArray(board) ?? [];
   }
 
   const handleTileClick = (tile: Tile) => {
     game?.swapTile(tile);
     game?.updateTileStatuses(board);
-    swaps = game?.getSwaps();
+    currentTurn = game?.getCurrentTurn();
   }
 
   const outOfTurns = $derived.by((): boolean => {
-    return swaps !== null && swaps !== undefined && swaps <= 0 && !solved;
+    return currentTurn !== null && currentTurn !== undefined && currentTurn <= 0 && !solved;
   });
   
   const solved = $derived.by(() => {
@@ -125,7 +126,7 @@
     board = initialScramble;
     game?.updateTileStatuses(board);
     game?.updateTileStatuses(board);
-    game?.resetSwaps();
+    game?.resetTurns();
   }
 
   const solvePuzzle = () => {
@@ -150,10 +151,12 @@
       solvePuzzle()
     }
     if (e.key == ']') {
-      swaps = (swaps ?? 0) + 1;
+      currentTurn = (currentTurn ?? 0) + 1;
+      game?.increaseTurns();
     }
     if (e.key == '[') {
-      swaps = (swaps ?? 0) - 1;
+      currentTurn = (currentTurn ?? 0) - 1;
+      game?.decreaseTurns();
     }
     if (e.key == '?') {
       showPopup = !showPopup;
@@ -184,9 +187,8 @@
 </svelte:head>
 
 <Header {title} {showPopup} bind:words />
-
 {#if board && words!.length > 0}
-  <Progress {swaps} {startingSwaps} {toggleDebug} {board} />
+  <Progress {currentTurn} {startingSwaps} {toggleDebug} {board} />
   
   <div class="board" class:solved={solved} class:failed={outOfTurns} style="--cols: {board.length}" >
     {#each board as row, rowIndex}
@@ -207,7 +209,7 @@
     {/each}
   </div>
 
-  <Messages {myButton} {swaps} {outOfTurns} {solved} {chooseGame} {shuffle} />
+  <Messages {myButton} {currentTurn} {outOfTurns} {solved} {chooseGame} {shuffle} />
   <Debug {board} {words} {initialScramble} />
 {:else}
   <h2>Choose a puzzle size.</h2>

@@ -39,6 +39,7 @@ const oneWordFromList = async (obj) => {
 };
 
 export const pickSixWords = async (): Promise<string[]> => {
+  await new Promise(resolve => setTimeout(resolve, 10)); // Add a short delay
   const words = new Set();
   const maxAttempts = 20000;
 
@@ -82,6 +83,7 @@ export const pickSixWords = async (): Promise<string[]> => {
 }
 
 export const pickEightWords = async (): Promise<string[]> => {
+  await new Promise(resolve => setTimeout(resolve, 10)); // Add a short delay
   const words = new Set();
   const maxAttempts = 20000;
   
@@ -123,10 +125,11 @@ export const pickEightWords = async (): Promise<string[]> => {
       }
       words.clear(); // Clear set if not all words are unique
     } catch (e) {
-      // Handle error if needed
+      console.log('error: ', e);
     }
   }
 
   console.log(`FAILED TO CHOOSE EIGHT WORDS after ${maxAttempts} attempts.`);
   return [];
+  
 };

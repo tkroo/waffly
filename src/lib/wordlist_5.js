@@ -823,6 +823,7 @@ const words_5 = [
   "coast",
   "cobra",
   "cocoa",
+  "codec",
   "colic",
   "colon",
   "comer",

@@ -18,7 +18,6 @@
 
 {#if myBools.debug}
   <div class="debug">
-
     <div class="mono">
       {#each board as brow}
       <div class="tinygrid" style="grid-template-columns: repeat({size}, 1fr)">{@html brow.map(x => {return x.value ? `<div class="tiny green">${x.correctValue}</div>` : '<div class="blank">.</div>'}).join('')}</div>

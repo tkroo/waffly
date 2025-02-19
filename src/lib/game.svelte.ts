@@ -8,12 +8,12 @@ export function createGame(gridSize: number): GameReturnType {
   let _words: string[] | null = null;
   let _selectedTile: Tile | null = null; // State to track selected tile for swapping
   let _startingSwaps:number = gridSize == 5 ? 16 : 32;
-  let swaps: number = _startingSwaps;
+  let currentTurn: number = _startingSwaps;
   
   
   async function initialize() {
     _words = await pickWords(_gridSize);
-    swaps = _startingSwaps;
+    currentTurn = _startingSwaps;
   }
 
   function generateGrid(gridSize: number): Board {
@@ -169,12 +169,24 @@ export function createGame(gridSize: number): GameReturnType {
     return _words;
   }
   
-  function getSwaps(): number {
-    return swaps ?? 0;
+  function getCurrentTurn(): number {
+    return currentTurn ?? 0;
+  }
+
+  function decreaseTurns() {
+    if (currentTurn > 0) {
+      currentTurn = currentTurn - 1;
+      console.log('- currentTurn', currentTurn);
+    }
+  }
+
+  function increaseTurns() {
+    currentTurn = currentTurn + 1;
+    console.log('+ currentTurn', currentTurn);
   }
   
-  function resetSwaps() {
-    swaps = _startingSwaps;
+  function resetTurns() {
+    currentTurn = _startingSwaps;
   }
 
   function getRow(row: number, arr: Board): Tile[] {
@@ -245,7 +257,7 @@ export function createGame(gridSize: number): GameReturnType {
       } else {
         [_selectedTile.value, tile.value] = [tile.value, _selectedTile.value];
         _selectedTile.swapStatus = ''; // Clear selected state for both
-        swaps--;
+        currentTurn--;
         tile.swapStatus = '';
         _selectedTile = null;
       }
@@ -256,7 +268,7 @@ export function createGame(gridSize: number): GameReturnType {
     gridSize: _gridSize,
     grid: _grid,
     words: _words,
-    swaps: swaps,
+    currentTurn: currentTurn,
     startingSwaps: _startingSwaps,
     initialize: initialize,
     generateGrid: generateGrid,
@@ -267,9 +279,11 @@ export function createGame(gridSize: number): GameReturnType {
     getWords: getWords,
     getRow: getRow,
     getCol: getCol,
-    getSwaps: getSwaps,
+    getCurrentTurn: getCurrentTurn,
+    increaseTurns: increaseTurns,
+    decreaseTurns: decreaseTurns,
     solveGrid: solveGrid,
-    resetSwaps: resetSwaps,
+    resetTurns: resetTurns,
     countAppearances: countAppearances,
     updateTileStatuses: updateTileStatuses,
     swapTile: swapTile // Expose swapTile function
