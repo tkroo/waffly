@@ -1,5 +1,6 @@
 import { pickSixWords, pickEightWords } from "$lib/pickWords";
 import type { GameReturnType, Board, Tile } from "./types";
+import { myArrays } from "./utils.svelte";
 
 export function createGame(gridSize: number): GameReturnType {
 
@@ -205,6 +206,27 @@ export function createGame(gridSize: number): GameReturnType {
     return counts;
   }
 
+  // a function to check each row and column for correct values
+  function checkRowsAndColumns(grid: Board): string[] {
+    for (let i = 0; i < _gridSize; i++) {
+      let r = getRow(i, grid);
+      let c = getCol(i, grid);
+      if (r.every(tile => tile.value === tile.correctValue) && (i % 2 == 0)) {
+        let word = r.map(tile => tile.correctValue).join('');
+        if (!myArrays.completedWords.includes(word)) {
+          myArrays.completedWords.push(word);
+        }
+      }
+      if (c.every(tile => tile.value === tile.correctValue) && (i % 2 == 0)) {
+        let word = c.map(tile => tile.correctValue).join('');
+        if (!myArrays.completedWords.includes(word)) {
+          myArrays.completedWords.push(word);
+        }
+      }
+    }
+    return myArrays.completedWords;
+  }
+
   function updateTileStatuses(grid: Board): Board {
     if (!grid) {
       throw new Error('grid is undefined');
@@ -286,6 +308,7 @@ export function createGame(gridSize: number): GameReturnType {
     resetTurns: resetTurns,
     countAppearances: countAppearances,
     updateTileStatuses: updateTileStatuses,
+    checkRowsAndColumns,
     swapTile: swapTile // Expose swapTile function
   };
 }

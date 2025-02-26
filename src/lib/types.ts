@@ -31,6 +31,7 @@ export type GameReturnType = {
   countAppearances: (arr: string[]) => { [key: string]: number; };
   swapTile: (tile: Tile) => void; // Added swapTile function
   resetTurns: () => void;
+  checkRowsAndColumns: (grid: Board) => void;
   increaseTurns: () => void;
   decreaseTurns: () => void;
 };

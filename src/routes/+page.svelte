@@ -4,10 +4,11 @@
   import { pushState } from '$app/navigation';
   
   import type { Tile, Board, GameReturnType } from '$lib/types';
-  import { myBools } from '$lib/utils.svelte.js';
+  import { myBools, myArrays } from '$lib/utils.svelte.js';
   import { createGame } from '$lib/game.svelte';
   import { decodeText, encodeText } from '$lib/rot13.js';
 	
+  import DefinitionList from '$lib/components/DefinitionList.svelte';
   import Debug from '$lib/components/Debug.svelte';
 	import Header from '$lib/components/Header.svelte';
   import LetterTile from "$lib/components/LetterTile.svelte";
@@ -88,6 +89,7 @@
     } else {
       throw new Error('words is undefined');
     }
+    myArrays.completedWords = [];
     board = game?.shuffle2DArray(board);
     initialScramble = structuredClone($state.snapshot(board));
     game?.resetTurns();
@@ -98,12 +100,14 @@
   const shuffle = () => {
     game?.resetTurns();
     currentTurn = game?.startingSwaps;
+    myArrays.completedWords = [];
     board = game?.shuffle2DArray(board) ?? [];
   }
 
   const handleTileClick = (tile: Tile) => {
     game?.swapTile(tile);
     game?.updateTileStatuses(board);
+    myArrays.completedWords = game?.checkRowsAndColumns(board) ?? [];
     currentTurn = game?.getCurrentTurn();
   }
 
@@ -132,6 +136,7 @@
   const solvePuzzle = () => {
     board = game?.solveGrid(board) ?? board;
     board = game?.updateTileStatuses(board) ?? board;
+    myArrays.completedWords = game?.checkRowsAndColumns(board);
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
@@ -210,6 +215,7 @@
   </div>
 
   <Messages {myButton} {currentTurn} {outOfTurns} {solved} {chooseGame} {shuffle} />
+  {#if myBools.fetchDefinitions}<DefinitionList />{/if}
   <Debug {board} {words} {initialScramble} />
 {:else}
   <h2>Choose a puzzle size.</h2>

@@ -26,6 +26,10 @@
       <input type="checkbox" id="highContrast" bind:checked={myBools.highContrast}>
       High contrast colors
     </label>
+    <label for="definitions">
+      <input type="checkbox" id="definitions" bind:checked={myBools.fetchDefinitions}>
+      Show word definitions
+    </label>
     <h2>Keyboard</h2>
     <ul class="items smaller">
       <li class="col2"><span class="tile-little key">5</span>New 5x5</li>

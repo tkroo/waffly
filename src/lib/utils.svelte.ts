@@ -1,4 +1,9 @@
 export const myBools = $state({
-  highContrast: false,
   debug: false,
+  highContrast: false,
+  fetchDefinitions: false
+})
+
+export const myArrays = $state({
+  completedWords: [],
 })
