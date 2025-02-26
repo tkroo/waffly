@@ -7,6 +7,6 @@
   <title>waffly</title>
 </svelte:head>
 
-<main class:cb={myBools.highContrast}>
+<div class:cb={myBools.highContrast}>
   {@render children()}
-</main>
+</div>
