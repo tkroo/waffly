@@ -216,7 +216,8 @@
   <title>{pageTitle}</title>
 </svelte:head>
 
-<Header {title} {showPopup} bind:words />
+<main>
+  <Header {title} {showPopup} bind:words />
 {#if board && words!.length > 0}
   <Progress {currentTurn} {startingSwaps} {toggleDebug} {board} />
   
@@ -249,6 +250,7 @@
     {@render myButton("7x7 Puzzle", "", () => chooseGame(7))}
   </div>
 {/if}
+</main>
 
 
 <style>
