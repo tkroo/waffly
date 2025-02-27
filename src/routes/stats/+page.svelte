@@ -6,8 +6,8 @@
   let { data } = $props();
   console.log('=========\n data: ', data);
 
-  let games_5_letters = $derived.by(() => data.games.filter(game => game.words.length == 6));
-  let games_7_letters = $derived.by(() => data.games.filter(game => game.words.length == 8));
+  let games_5_letters = $derived.by(() => data.data.games.filter(game => game.words.length == 6));
+  let games_7_letters = $derived.by(() => data.data.games.filter(game => game.words.length == 8));
 
   let testword = $state('');
   

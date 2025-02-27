@@ -3,9 +3,6 @@ import path from 'path';
 
 exports.handler = async function(event, context) {
   try {
-    console.log(`process.env.URL: ${process.env.URL}`);
-
-    
     const filePath = path.join(__dirname, '../functions/gamesdata.json'); // Path to your data.json file (relative to the function)
     // const filePath = '/gamesdata.json'; // Path to your data.json file (relative to the function)
     const dataBuffer = await fs.readFile(filePath);
