@@ -28,12 +28,8 @@ exports.handler = async function(event, context) {
     // 2. Update the JSON data:
     existingData.games.push(data); // Assuming you want to add new items to an 'items' array
 
-    // can i write to this file?
-    // https://waffleclone2.netlify.app/stats/__data.json
-    // const writeFilePath = `https://waffleclone2.netlify.app/stats/__data.json`;
-    const writeFilePath = `${process.cwd()}/gamesdata.json`;
     // 3. Write the updated JSON back to the file:
-    await fs.writeFile(writeFilePath, JSON.stringify(existingData, null, 2)); // 'null, 2' for pretty formatting
+    await fs.writeFile(filePath, JSON.stringify(existingData, null, 2)); // 'null, 2' for pretty formatting
 
     return {
       statusCode: 200,
