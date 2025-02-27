@@ -95,6 +95,7 @@
     game?.resetTurns();
     currentTurn = game?.startingSwaps;
     startingSwaps = game?.startingSwaps;
+    writeGameToFile();
   }
 
   const shuffle = () => {
@@ -109,6 +110,30 @@
     game?.updateTileStatuses(board);
     myArrays.completedWords = game?.checkRowsAndColumns(board) ?? [];
     currentTurn = game?.getCurrentTurn();
+  }
+
+  const writeGameToFileHELLOTEST = async() => {
+    let message = '';
+    const res = await fetch('/.netlify/functions/hello');
+    message = await res.json();
+    console.log('message: ', message);
+  }
+  const writeGameToFile = async() => {
+    // POST game to /api/write-data
+    if (words !== null && words !== undefined) {
+      await fetch('/.netlify/functions/write-json', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          words: words,
+          rot13string: words[0].length + '' + encodeText(words)
+        })
+      });
+    } else {
+      throw new Error('words is null or undefined');
+    }
   }
 
   const outOfTurns = $derived.by((): boolean => {
@@ -191,7 +216,8 @@
   <title>{pageTitle}</title>
 </svelte:head>
 
-<Header {title} {showPopup} bind:words />
+<main>
+  <Header {title} {showPopup} bind:words />
 {#if board && words!.length > 0}
   <Progress {currentTurn} {startingSwaps} {toggleDebug} {board} />
   
@@ -224,6 +250,7 @@
     {@render myButton("7x7 Puzzle", "", () => chooseGame(7))}
   </div>
 {/if}
+</main>
 
 
 <style>
