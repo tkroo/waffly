@@ -18,7 +18,7 @@ exports.handler = async function(event, context) {
     // **Security Note:** In a real application, you MUST validate and sanitize 'data' here
     // to prevent malicious input from being written to your JSON file.
 
-    const filePath = path.join(__dirname, '../gamesdata.json'); // Path to your data.json file (relative to the function)
+    const filePath = path.join(__dirname, '../functions/gamesdata.json'); // Path to your data.json file (relative to the function)
     // const filePath = '/gamesdata.json'; // Path to your data.json file (relative to the function)
 
     // 1. Read existing JSON:
