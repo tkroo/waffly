@@ -30,7 +30,8 @@ exports.handler = async function(event, context) {
 
     // can i write to this file?
     // https://waffleclone2.netlify.app/stats/__data.json
-    const writeFilePath = `https://waffleclone2.netlify.app/stats/__data.json`;
+    // const writeFilePath = `https://waffleclone2.netlify.app/stats/__data.json`;
+    const writeFilePath = `${process.cwd()}/gamesdata.json`;
     // 3. Write the updated JSON back to the file:
     await fs.writeFile(writeFilePath, JSON.stringify(existingData, null, 2)); // 'null, 2' for pretty formatting
 
